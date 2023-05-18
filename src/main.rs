@@ -6,22 +6,28 @@ use itertools::Itertools;
 type Result<T> = std::result::Result<T, Box<dyn Error>>;
 
 fn main() {
+    //part 1
     let test_str = "\
         49276d206b696c6c696e6720796f757220627261696e206c\
         696b65206120706f69736f6e6f7573206d757368726f6f6d";
     let res = hex_to_base64(test_str).unwrap();
     println!("{}", res);
 
+    //part 2
     let h1 = "1c0111001f010100061a024b53535009181c";
     let h2 = "686974207468652062756c6c277320657965";
     let res = hex_xor(h1, h2).unwrap();
     println!("{}", res);
 
+    //part 3
     let s = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
     let bs = hex_to_byte_vec(s).unwrap();
     let (guess, _) = brute_force_single_byte_xor_ciper(&bs);
     println!("{}", guess);
-    //brute_force_single_byte_xor_ciper_all(&bs);
+
+    //part 4
+    let data = std::fs::read_to_string("data/set_1/part4.txt").unwrap();
+    //continue here
 }
 
 fn brute_force_single_byte_xor_ciper(data: &[u8]) -> (String, u8) {
