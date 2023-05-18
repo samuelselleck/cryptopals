@@ -16,6 +16,31 @@ fn main() {
     let h2 = "686974207468652062756c6c277320657965";
     let res = hex_xor(h1, h2).unwrap();
     println!("{}", res);
+
+    let s = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+    let bs = hex_to_byte_vec(s).unwrap();
+    let (guess, _) = brute_force_single_byte_xor_ciper(&bs);
+    println!("{}", guess);
+}
+
+fn brute_force_single_byte_xor_ciper(data: &[u8]) -> (String, u8) {
+    let (best_decoded, best_code) = (0..=u8::MAX)
+        .map(|code| {
+            let decoded = single_byte_xor_decode(data, code);
+            (decoded, code)
+        })
+        .max_by_key(|(decoded, _)| textlike_score(decoded))
+        .unwrap();
+    let s = String::from_utf8(best_decoded).unwrap_or("invalid utf8".into());
+    (s, best_code)
+}
+
+fn textlike_score(decoded: &[u8]) -> u32 {
+    todo!()
+}
+
+fn single_byte_xor_decode(data: &[u8], b: u8) -> Vec<u8> {
+    data.iter().map(|v| v ^ b).collect()
 }
 
 fn to_base_64_char(n: u8) -> char {
