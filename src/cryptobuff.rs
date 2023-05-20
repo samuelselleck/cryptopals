@@ -42,6 +42,11 @@ impl std::ops::BitXor for &CryptoBuff {
 }
 
 impl CryptoBuff {
+
+    pub fn new(bytes: &[u8]) -> Self {
+        Self { bytes: bytes.to_vec()}
+    }
+
     pub fn from_hex(hex: &str) -> Result<Self> {
         let mut data = Vec::new();
         let s_offset = hex.len() % 2;

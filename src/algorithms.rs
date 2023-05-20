@@ -13,3 +13,11 @@ pub fn brute_force_single_byte_xor_ciper(cb: &CryptoBuff) -> (CryptoBuff, u8) {
         })
         .unwrap()
 }
+
+pub fn repeating_key_xor(cb: &CryptoBuff, key: &[u8]) -> CryptoBuff {
+    key.iter()
+        .cycle()
+        .zip(cb.iter())
+        .map(|(v, u)| v ^ u)
+        .collect()
+}

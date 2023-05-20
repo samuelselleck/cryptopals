@@ -29,16 +29,22 @@ fn main() {
     println!("{}", guess.to_utf8().unwrap());
 
     //part 4
-    let data = std::fs::read_to_string("data/set_1/part4.txt").unwrap();
-    let (best_guess, _) = data
-        .lines()
-        .map(|l| {
-            let cb = CryptoBuff::from_hex(l).unwrap();
-            let (decrypted, _) = algorithms::brute_force_single_byte_xor_ciper(&cb);
-            (decrypted, stats::textlike_score(&cb))
-        })
-        .min_by(|(_, s1), (_, s2)| s1.total_cmp(s2))
-        .unwrap();
-    println!("{}", best_guess.to_utf8().unwrap());
-    //continue here
+    // let data = std::fs::read_to_string("data/set_1/part4.txt").unwrap();
+    // let (best_guess, _) = data
+    //     .lines()
+    //     .map(|l| {
+    //         let cb = CryptoBuff::from_hex(l).unwrap();
+    //         let (decrypted, _) = algorithms::brute_force_single_byte_xor_ciper(&cb);
+    //         (decrypted, stats::textlike_score(&cb))
+    //     })
+    //     .min_by(|(_, s1), (_, s2)| s1.total_cmp(s2))
+    //     .unwrap();
+    // println!("{}", best_guess.to_utf8().unwrap());
+
+    //part 5
+    let text = "Burning 'em, if you ain't quick and nimble \
+                I go crazy when I hear a cymbal";
+    let cb = CryptoBuff::new(text.as_bytes());
+    let encoded = algorithms::repeating_key_xor(&cb, "ICE".as_bytes());
+    println!("{}", encoded.to_hex());
 }
