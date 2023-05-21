@@ -47,4 +47,8 @@ fn main() {
     let cb = CryptoBuff::new(text.as_bytes());
     let encoded = algorithms::repeating_key_xor(&cb, "ICE".as_bytes());
     println!("{}", encoded.to_hex());
+
+    //part 6
+    let data = std::fs::read_to_string("data/set_1/part6.txt").unwrap();
+    let cb = CryptoBuff::from_base64(&data).unwrap();
 }
