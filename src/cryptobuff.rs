@@ -1,5 +1,7 @@
 use std::ops::Deref;
 
+use base64::{engine::general_purpose, Engine};
+
 use super::Result;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -63,38 +65,8 @@ impl CryptoBuff {
     }
 
     pub fn from_base64(base64: &str) -> Result<Self> {
-        fn from_base64_char(c: char) -> Result<u8> {
-            if !c.is_ascii() {
-                return Err("detected non-ascii character".into());
-            }
-
-            let v = c as u8;
-            Ok(match c {
-                'a'..='z' => v - b'a' + 26,
-                'A'..='Z' => v - b'A',
-                '0'..='9' => v - b'0' + 52,
-                '+' => 62,
-                '/' => 63,
-                _ => return Err("not a base64 character".into()),
-            })
-        }
-
-        let vals: Result<Vec<u8>> = base64.chars().map(from_base64_char).collect();
-
-        #[rustfmt::skip]
-        let bytes = vals?
-            .into_iter()
-            .array_chunks()
-            .flat_map(|[a, b, c, d]| {
-                [
-                    (a << 2) | (b >> 4), 
-                    (b << 4) | (c >> 2), 
-                    (c << 6) | d
-                ]
-            })
-            .collect();
-
-        Ok(Self { bytes })
+        let bytes = general_purpose::STANDARD.decode(base64)?;
+        Ok(Self::new(&bytes))
     }
 
     pub fn bytes(&self) -> &[u8] {

@@ -48,11 +48,17 @@ fn guess_keylen(data: &CryptoBuff) -> Vec<u32> {
     let mut key_sizes: Vec<u32> = (2..=40).collect();
 
     key_sizes.sort_by_key(|&keylen| {
-        let k_l = keylen as usize;
-        hamming_distance(&data[0..k_l], &data[k_l..(2 * k_l)]) / keylen
+        let sim: Vec<_> = data
+            .chunks_exact(keylen as usize * 2)
+            .map(|v| {
+                let (a, b) = v.split_at(keylen as usize);
+                hamming_distance(a, b)
+            })
+            .collect();
+        1000 * sim.iter().sum::<u32>() / sim.len() as u32 / keylen
     });
 
-    key_sizes.to_vec()
+    key_sizes[..4].to_vec()
 }
 
 fn guess_decode_key(cb: &CryptoBuff, key_size: u32) -> CryptoBuff {
