@@ -115,4 +115,13 @@ impl CryptoBuff {
     pub fn to_utf8(&self) -> Result<String> {
         Ok(String::from_utf8(self.bytes().to_vec())?)
     }
+
+    pub fn padded(mut self, block_size: usize) -> Self {
+        let over = self.len() % block_size;
+        let n = block_size - over;
+        for _ in 0..n {
+            self.bytes.push(n as u8);
+        }
+        self
+    }
 }
